@@ -1,10 +1,9 @@
 package edu.tasks.fitfh;
-/*
+
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-*/
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -162,12 +161,12 @@ public class Task5 {
         if (units > 0) answer += numbers[0][units];
         return answer;
     }
-/*
+
     private static String getSha256Hash(String str) {
         return Hashing.sha256().hashString(str, StandardCharsets.UTF_8).toString();
     }
 
- */
+
     private static String correctTitle(String title) {
         String[] words = title.split(" ");
         String newTitle = "";
@@ -188,7 +187,6 @@ public class Task5 {
             n += 6 * i;
             i++;
         }
-        System.out.println(n);
         if (n != size) return "Invalid";
         String answer = "";
         int stringLen = i * 4 - 3;
