@@ -1,16 +1,11 @@
 package edu.tasks.fitfh;
-
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-
-
 public class Task5 {
     public static String encrypt(String text){
         String [] words = new String[text.length()];
@@ -26,7 +21,7 @@ public class Task5 {
         return String.join(", ", words2);
     }
 
-    public static String decrypt(int[] a){      //кодироване слов из чисел в слова
+    public static String decrypt(int[] a){
         String result ="";
         char x = 0;
 
@@ -162,8 +157,13 @@ public class Task5 {
         return answer;
     }
 
-    private static String getSha256Hash(String str) {
-        return Hashing.sha256().hashString(str, StandardCharsets.UTF_8).toString();
+    private static HashCode getSha256Hash(String str) {
+
+        Hasher hasher = Hashing.sha256().newHasher();
+        hasher.putString(str, Charsets.UTF_8);
+        HashCode sha256 = hasher.hash();
+
+        return sha256;
     }
 
 
