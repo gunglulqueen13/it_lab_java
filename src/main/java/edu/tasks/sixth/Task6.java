@@ -1,77 +1,10 @@
 package edu.tasks.sixth;
 import java.util.*;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import java.util.regex.Pattern;
 
 public class Task6 {
-    public static void main(String[] args) {
-        //ex1
-        System.out.println("----------ex1----------");
-        System.out.println(bell(1));
-        System.out.println(bell(2));
-        System.out.println(bell(3));
-
-        //ex2
-        System.out.println("----------ex2----------");
-        System.out.println(translateWord("flag"));
-        System.out.println(translateWord("Apple"));
-        System.out.println(translateWord("button"));
-        System.out.println(translateWord(""));
-        System.out.println(translateSentence("I like to eat honey waffles."));
-        System.out.println(translateSentence("Do you think it is going to rain today?"));
-
-        //ex3
-        System.out.println("----------ex3----------");
-        System.out.println(validColor("rgb(0,0,0)"));
-        System.out.println(validColor("rgb(0,,0)"));
-        System.out.println(validColor("rgb(255,256,255)"));
-        System.out.println(validColor("rgba(0,0,0,0.123456789)"));
-
-        //ex4
-        System.out.println("----------ex4----------");
-        System.out.println(stripUrlParams("https://edabit.com?a=1&b=2&a=2"));
-        System.out.println(stripUrlParams("https://edabit.com?a=1&b=2&a=2", new String[]{"b"}));
-        System.out.println(stripUrlParams("https://edabit.com", new String[]{"b"}));
-
-        //ex5
-        System.out.println("----------ex5----------");
-        System.out.println(getHashTags("How the Avocado Became the Fruit of the Global Trade"));
-        System.out.println(getHashTags("Why You Will Probably Pay More for Your Christmas Tree This Year"));
-        System.out.println(getHashTags("Hey Parents, Surprise, Fruit Juice Is Not Fruit"));
-        System.out.println(getHashTags("Visualizing Science"));
-
-        //ex6 TODO
-        System.out.println("----------ex6----------");
-        System.out.println(ulam(4));
-        System.out.println(ulam(9));
-        System.out.println(ulam(206));
-
-        //ex7
-        System.out.println("----------ex7----------");
-        System.out.println(longestNonrepeatingSubstring("abcabcbb"));
-        System.out.println(longestNonrepeatingSubstring("aaaaaa"));
-        System.out.println(longestNonrepeatingSubstring("abcde"));
-        System.out.println(longestNonrepeatingSubstring("abcda"));
-
-        //ex8 TODO
-        System.out.println("----------ex8----------");
-        System.out.println(convertToRoman(2));
-        System.out.println(convertToRoman(12));
-        System.out.println(convertToRoman(16));
-
-        //ex9
-        System.out.println("----------ex9----------");
-        System.out.println(formula("6 * 4 = 24"));
-        System.out.println(formula("18 / 17 = 2"));
-        System.out.println(formula("16 * 10 = 160 = 14 + 120"));
-
-        //ex10
-        System.out.println("----------ex10---------");
-        System.out.println(palindromedescendant(11211230));
-        System.out.println(palindromedescendant(13001120));
-        System.out.println(palindromedescendant(23336014));
-        System.out.println(palindromedescendant(11));
-    }
-
     private static int c(int n, int k) {
         if (k == 0) return 1;
         if (k == 1) return n;
@@ -94,7 +27,7 @@ public class Task6 {
         word = word.toLowerCase();
 
         String vowels = "eyuioa";
-        boolean isStartsWithVowel = vowels.indexOf(word.charAt(0)) != -1;
+        boolean isStartsWithVowel = vowels.indexOf(word.charAt(0)) != -1;//если гласная
 
         if (!isStartsWithVowel && word.length() > 1) {
             while (vowels.indexOf(word.charAt(0)) == -1)
@@ -187,28 +120,42 @@ public class Task6 {
         return tags;
     }
 
-    private static int ulam(int n) {
-        n--;
-        ArrayList<Integer> ulam = new ArrayList<>();
-        ulam.add(1);
-        ulam.add(2);
-        for (int i = 0; i < n; i++) {
-            ArrayList<Integer> sum = (ArrayList<Integer>) ulam.clone();
-            ArrayList<Integer> uniq = new ArrayList<>();
-            for (int j = 0; j < ulam.size() - 1; j++)
-                for (int k = j + 1; k < ulam.size(); k++) {
-                    int newSum = ulam.get(j) + ulam.get(k);
-                    if (sum.contains(newSum)) {
-                        int index = uniq.indexOf(newSum);
-                        if (index != -1) uniq.remove(index);
-                    } else {
-                        sum.add(newSum);
-                        uniq.add(newSum);
-                    }
-                }
-            ulam.add(Collections.min(uniq));
+    public static int ulam(int n) {
+        ArrayList<Integer> ulamNumbers = new ArrayList<>(Arrays.asList(1, 2));
+
+
+        if (n == 1) {
+            return ulamNumbers.get(0);
         }
-        return ulam.get(n);
+        if (n == 2) {
+            return ulamNumbers.get(1);
+        }
+
+        int nextUlam = 3;
+        while (true){
+            if (n == ulamNumbers.size()) {
+                return ulamNumbers.get(n-1);
+            }
+            int count = 0;
+
+            for (int j = 0; j < ulamNumbers.size() - 1; j++) {
+                for (int k = j + 1; k < ulamNumbers.size(); k++) {
+                    if (ulamNumbers.get(j) + ulamNumbers.get(k) == nextUlam) {
+                        count++;
+                    }
+                    if (count > 1)
+                        break;
+                }
+                if (count > 1)
+                    break;
+            }
+
+            if (count == 1) {
+                ulamNumbers.add(nextUlam);
+            }
+
+            nextUlam++;
+        }
     }
 
     private static String longestNonrepeatingSubstring(String str) {
@@ -221,75 +168,70 @@ public class Task6 {
         return result;
     }
 
-    private static String convertToRoman(int n) {
-        int[] romanKeys = new int[]{1000, 500, 100, 50, 10, 5, 1};
-        Character[] romanValues = new Character[]{'M', 'D', 'C', 'L', 'X', 'V', 'I'};
-
-        String answer = "";
-        for (int i = 0; i < romanKeys.length; i++) {
-            int k = n / romanKeys[i];
-            if (k < 4) {
-                for (int j = 0; j < k; j++)
-                    answer += romanValues[i];
-            } else if (k == 4) {
-                answer += romanValues[i];
-                answer += romanValues[i - 1];
-            }
-            n -= k * romanKeys[i];
-        }
-
-        return answer;
+    public static String convertToRoman(int num) {
+        String[] thousands = {"", "M", "MM", "MMM"};
+        String[] hundreds = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        String[] tens = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        String[] units = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        return thousands[num / 1000] + hundreds[(num % 1000) / 100] + tens[(num % 100) / 10] + units[num % 10];
     }
 
-    private static boolean formula(String formula) {
-        formula = formula.replace(" ", "");
-        String[] expressions = formula.split("=");
-        ArrayList<Integer> results = new ArrayList<>();
-        for (String expression : expressions) {
-            if (expression.indexOf("+") > 0)
-                results.add(Integer.parseInt(expression.split("\\+")[0]) + Integer.parseInt(expression.split("\\+")[1]));
-            else if (expression.indexOf("-") > 0)
-                results.add(Integer.parseInt(expression.split("-")[0]) - Integer.parseInt(expression.split("-")[1]));
-            else if (expression.indexOf("*") > 0)
-                results.add(Integer.parseInt(expression.split("\\*")[0]) * Integer.parseInt(expression.split("\\*")[1]));
-            else if (expression.indexOf("/") > 0)
-                results.add(Integer.parseInt(expression.split("/")[0]) / Integer.parseInt(expression.split("/")[1]));
-            else
-                results.add(Integer.parseInt(expression));
+    public static boolean formula(String f) {
+        String[] formulaParts = f.split("\s=\s");
+        HashSet<Double> calculations = new HashSet<>();
+
+        for (String part : formulaParts) {
+            Expression e = new ExpressionBuilder(part).build();
+            calculations.add(e.evaluate());
         }
-        for (int i = 0; i < results.size() - 1; i++) {
-            if (results.get(i) != results.get(i + 1)) return false;
-        }
-        return true;
+
+        return calculations.size() == 1;
     }
 
-    private static boolean palindromedescendant(int n) {
-        ArrayList<Integer> digits = new ArrayList<>();
-        while (n > 0) {
-            digits.add(n % 10);
-            n = n / 10;
+    public static boolean palindromeDescendant(long num) {
+        String s = String.valueOf(num);
+        if (s.length() <= 1) {
+            return false;
         }
-        return palindromedescendant(digits);
+        if(isPalindrome(s)) {
+            return true;
+        }
+        return palindromeDescendant(
+                Long.parseLong(
+                        makeSumOfPairs(s)
+                )
+        );
+    }
+    public static boolean isPalindrome(String s) {
+        return s.equals(new StringBuilder(s).reverse().toString());
     }
 
-    private static boolean palindromedescendant(ArrayList<Integer> digits) {
-        if (digits.size() == 1) return false;
-        boolean isPalindrome = true;
-        for (int i = 0; i < digits.size() / 2; i++)
-            if (digits.get(i) != digits.get(digits.size() - i - 1)) {
-                isPalindrome = false;
-                break;
-            }
-        if (isPalindrome) return true;
-        ArrayList<Integer> newDigits = new ArrayList<>();
-        for (int i = 0; i < digits.size() - 1; i += 2) {
-            int n = digits.get(i) + digits.get(i + 1);
-            if (n > 10) {
-                newDigits.add(n / 10);
-                newDigits.add(n % 10);
-            } else
-                newDigits.add(n);
+    public static String makeSumOfPairs(String num) {
+        String[] digits = num.split("");
+        ArrayList<String> newNum = new ArrayList<>();
+
+        for(int i = 0; i < digits.length-1; i+=2){
+            newNum.add(
+                    String.valueOf(
+                            Integer.parseInt(digits[i]) +
+                                    Integer.parseInt(digits[i+1])
+                    )
+            );
         }
-        return palindromedescendant(newDigits);
+
+        return String.join("", newNum);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(bell(3));
+        System.out.println(translateSentence("Do you think it is going to rain today?"));
+        System.out.println(validColor("rgba(0,0,0,0.123456789)"));
+        System.out.println(stripUrlParams("https://edabit.com", new String[]{"b"}));
+        System.out.println(getHashTags("Visualizing Science"));
+        System.out.println(ulam(206));
+        System.out.println(longestNonrepeatingSubstring("abcda"));
+        System.out.println(convertToRoman(16));
+        System.out.println(formula("16 * 10 = 160 = 14 + 120"));
+        System.out.println(palindromeDescendant(23336014));
     }
 }
